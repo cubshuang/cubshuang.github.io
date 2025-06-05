@@ -1,0 +1,97 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+/*§ïª©*/
+.content-wrapper {
+    background: #f8f9fa !important;
+}
+.footer {
+    padding: .5rem 2.5rem !important;
+    background: #e9ecef !important;
+}
+/*#4d8e45 ­ì¦â
+  #cad640  #51B251 #a6c544
+  #80CC58
+*/
+/*.navbar {
+    background: #51B251 !important; 
+}*/
+/* navbar */
+.navbar, #grouplogo {
+    background: #80CC58 !important;
+}
+.brand-logo-mini {
+    padding-left: 0!important;
+    text-align: center!important
+}
+.brand-logo-mini img {
+    width: auto !important;
+    background-color: white !important;
+    padding-left: 0;
+}
+/* sidebar #e9ecef hsl(215 98% 52% / 0.1)*/
+#sidebar {
+    background: #e9ecef !important;
+}
+/* sidebar active*/
+.sidebar .nav .nav-item.active > .nav-link i,
+.sidebar .nav .nav-item.active > .nav-link .menu-title {
+    color: #FF8C00 !important;
+    font-weight: 600 !important;
+}
+/*menu icon*/
+.sidebar .nav .nav-item .nav-link i.menu-icon {
+    margin-left:0!important;
+    padding-right:0.375rem;
+    /*color: #258cfb !important;*/
+}
+.sidebar .nav .nav-item {
+    padding: 0 1.25rem !important;
+}
+
+.sidebar .nav .nav-item .nav-link {
+    padding: 1rem 0 1rem 0 !important;
+    font-size: 0.975rem !important;
+}
+/*sub menu*/
+.sidebar .nav.sub-menu .nav-item .nav-link {
+    padding: 0.75rem 1rem 0.75rem 1rem !important;
+    font-size: 0.875rem !important;
+}
+.sidebar .nav.sub-menu .nav-item .nav-link:hover{
+    color:#FF8C00 !important;
+    background-color:#eee;
+    font-weight: 600;
+}
+/* a.nav-link.active */
+.sidebar .nav.sub-menu .nav-item .nav-link.active:hover{
+    color:#FF8C00 !important;
+    background-color:#ccc !important;
+}
+.sidebar .nav.sub-menu .nav-item .nav-link.active {
+    background-color: #f8f8f8 !important;
+    border: 2px dashed red;
+    border-radius: 5px;
+    color: #198ae3 !important;
+    font-weight: 600;
+}
