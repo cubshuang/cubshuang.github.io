@@ -1,0 +1,86 @@
+html {
+    font-size: 12px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+.mypass-b {
+    color: #00B9F2;
+}
+.mypass-g {
+    color: #71BF44;
+}
+.mypass-o {
+    color:#F5821F;
+}
+.bg-gradient-mypass-b {
+    background-color: #00B9F2;
+    background-image: linear-gradient(180deg, #fff 0%, #00B9F2 10%, #00B9F2 100%);
+}
+.bg-gradient-mypass, .bg-gradient-mypass-g {
+    background-color: #71BF44;
+    background-image: linear-gradient(180deg, #fff 0%, #71BF44 10%, #71BF44 100%);
+}
+.bg-gradient-mypass-o {
+    background-color: #F5821F;
+    background-image: linear-gradient(180deg, #fff 0%, #F5821F 10%, #F5821F 100%);
+}
+.bg-gradient-mypass-gray {
+    background-color: #eee;
+    background-image: linear-gradient(180deg, #fff 0%, #95be7e 10%, #71BF44 80%);
+}
+.bg-gradient-mypass, .bg-gradient-mypass-b, .bg-gradient-mypass-g, .bg-gradient-mypass-o.bg-gradient-mypass-gray {
+    background-size: cover;
+}
+.btn-mypass-b {
+    background-color: #00B9F2;
+}
+.btn-mypass, .btn-mypass-g {
+    background-color: #71BF44;
+}
+.btn-mypass-o {
+    background-color: #F5821F;
+}
+
+/*sidebar selected*/
+.sidebar a.collapse-item.active:hover {
+    /*background-color: inherit !important;*/
+    /*background-color: transparent !important;*/
+    background-color: #eaecf4 !important;
+}
+.sidebar a.collapse-item.active {
+    background-color: #def6d1 !important;
+    border: 2px dashed red;
+    border-radius: 5px;
+    font-weight: 600;
+}
+.sidebar li.active {
+    /*background-color: #def6d1 !important;*/
+    border: 2px dashed red;
+    border-radius: 5px;
+    font-weight: 600;
+}
+
+.sidebar .nav-item .nav-link{
+    padding:0.75rem 1rem 0.75rem 1.25rem!important;
+}
+.sidebar li a span,.sidebar li a i{
+    color:#e4e4e4; 
+    font-size: 1.025rem!important;
+}
+.search_mypass{
+    border-radius: 0 5px 5px 0 ; border: 2px lightgray solid; border-left: 0px;
+}
