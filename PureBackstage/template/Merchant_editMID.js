@@ -180,18 +180,28 @@
         reportApp.mount(mountId);
         //ReRender ReBind
         $(".editMID").on("click", function (event) {
-            var mid = $(this).data("mid");
-            $.ajax({
-                method: "GET",
-                url: "../../api/getCTBCMerchant",
-                data: { mid: mid, model: null },
-                async: false,
-            }).done(function (ret) {
-                editMount(ret.datas);
-                uiModal.open();
-            }).fail(function () {
-                formui.setWarning($('#myPassMemo'), "取得資料發生錯誤", "")
-            });
+            let testData=[{
+            "RankNo": 2,
+            "MerchantId": "Bear002",
+            "StoreName": "小熊店鋪-天母1",
+            "isActive": "Y",
+            "myCreateTime": "2018-05-24T16:04:21.180"
+            }];
+            editMount(testData);
+            uiModal.open();
+
+            //var mid = $(this).data("mid");
+            // $.ajax({
+            //     method: "GET",
+            //     url: "../../api/getCTBCMerchant",
+            //     data: { mid: mid, model: null },
+            //     async: false,
+            // }).done(function (ret) {
+            //     editMount(ret.datas);
+            //     uiModal.open();
+            // }).fail(function () {
+            //     formui.setWarning($('#myPassMemo'), "取得資料發生錯誤", "")
+            // });
         });
     }
     //***********************
@@ -201,7 +211,7 @@
     let editCols = [
         { "id": "mod_MerchantId", "name": "特店代號", "type": "input" },
         { "id": "mod_StoreName", "name": "特店名稱", "type": "input" },
-        { "id": "mod_isActivr", "name": "是否啟用", "type": "radio", "vals": edit_isActive },
+        { "id": "mod_isActive", "name": "是否啟用", "type": "radio", "vals": edit_isActive },
     ];
     let editTitle = "商家名單維護";
     let currentEdit = null; //初始化物件，避免二次綁定時失敗
