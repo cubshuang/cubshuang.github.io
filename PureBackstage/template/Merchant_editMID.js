@@ -28,8 +28,8 @@
             template: `<div class="qryArea">
             <div class="row form-inline" v-for="(c,index) in cols">
                 <template v-if="c.type == 'radio'">
-                    <label class="col-sm-2 myrow">{{c.name}}：</label>
-                    <div class='col-sm-10 input-group radioGroup' v-bind:id="c.id">
+                    <label class="col-xl-1 col-sm-2 myrow">{{c.name}}：</label>
+                    <div class='col-xl-11 col-sm-10 input-group radioGroup' v-bind:id="c.id">
                         <template v-for="(r,index) in c.vals">
                           <input type="radio" v-bind:id="c.id+'_'+r.val" v-bind:name="c.id" v-bind:value="r.val" v-bind:checked=r.check />
                           <label v-bind:for="c.id+'_'+r.val">{{r.vName}}</label>
@@ -37,15 +37,15 @@
                     </div>
                 </template>
                 <template v-else>
-                    <label v-bind:for="c.id" class="col-sm-2 myrow">{{c.name}}：</label>
-                    <div class='col-sm-10 input-group' >
+                    <label v-bind:for="c.id" class="col-xl-1 col-sm-2 myrow">{{c.name}}：</label>
+                    <div class='col-xl-11 col-sm-10 input-group' >
                         <input v-bind:id="c.id" type='text' class='width-25'/>
                     </div>
                 </template>
             </div>
             <div class="row">
-                <div class="col-sm-2"> </div>
-                <div class='col-sm-10 form-group align-middle btnZone'>
+                <div class="col-xl-1 col-sm-2"> </div>
+                <div class='col-xl-11 col-sm-10 form-group align-middle btnZone'>
                     <button id="btn_clear" class="btn btn-warning "><i></i>清除</button>
                     <button id="btn_add" class="btn btn-danger ml-3 mr-3"><i class="glyphicon glyphicon-plus"></i>新增</button>
                     <button id="btn_qry" class="btn btn-info"><i class="glyphicon glyphicon-search"></i>查詢</button>
