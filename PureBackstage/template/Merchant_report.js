@@ -1,13 +1,15 @@
 ﻿    //***********************
     //**    GLOBAL變數     **
     //***********************
-    subTitle="商店資訊查詢";
+    subTitle="商店報表查詢";
 
     //***********************
     //** 查詢區域 Vue 綁定  **
     //***********************
     let qryCols = [
         { "id": "MerchantId", "name": "特店代號", "type": "input"},
+        { "id": "DateStart", "name": "報表起日", "type": "date"},
+        { "id": "DateEnd", "name": "報表迄日", "type": "date"},
     ];
     let currentQuery = null; //初始化物件，避免二次綁定時失敗
     function queryMount() {
@@ -22,10 +24,18 @@
             template: `
             <div class="mb-2">
             <div class="row form-inline" v-for="(c,index) in cols">
-                <label v-bind:for="c.id" class="col-sm-1 justify-content-end">{{c.name}}：</label>
-                <div class='col-sm-11' >
-                    <input v-bind:id="c.id" type='text'/>
-                </div>
+                <template v-if="c.type == 'date'">
+                    <label v-bind:for="c.id" class="col-sm-1 justify-content-end">{{c.name}}：</label>
+                    <div class='col-sm-11' >
+                        <input v-bind:id="c.id" type='date' class='w-25'/>
+                    </div>
+                </template>
+                <template v-else>
+                    <label v-bind:for="c.id" class="col-sm-1 justify-content-end">{{c.name}}：</label>
+                    <div class='col-sm-11' >
+                        <input v-bind:id="c.id" type='text' class='w-25'/>
+                    </div>
+                </template>
             </div>
             <div class="row">
                 <div class="col-sm-1"></div>
@@ -59,14 +69,15 @@
             // }
             //匯入資料
             //reload id.js
-            let  dataJsId = "d_Merchant_qryMID";
+            let  dataJsId = "d_Merchant_report";
             try {
                 loadScript("./templateData/"+dataJsId+".js")
                 .then(() => {
                     // 載入完成後執行的程式
                     dataMount(d_qryData);
                     //generate table
-                    $('#mypassTable').DataTable(formui.dtTwIni);
+                    //$('#mypassTable').DataTable(formui.dtTwIni);
+
                     $('#dataZone').show();
                 })
                 .catch((error) => {
@@ -79,13 +90,13 @@
                 formui.setWarning($('#myPassMemo'), "取得資料發生錯誤ex", error);
             }
         });
+        //initial
+         $('#MerchantId').val('Bear001');
     }
 
     //***********************
     //** 查詢資料 Vue 綁定  **
     //***********************
-    let reportCols = ["RankNo", "myMerchantId", "myStoreName", "myActive", "myCreateTime"];  //顯示欄位
-    let reportName = "商家清單";   //資料Title
     let reportApp = null; //初始化物件，避免二次綁定時失敗
     function dataMount(result) {
         var mountId = '#dataResult'; //要綁定的div Id
@@ -94,40 +105,47 @@
             reportApp.unmount();
         }
         const AppComponent = {
-            props: ['report', 'data', 'cols'],
+            // props: ['report', 'data', 'cols'],
             template: `
-            <div class='myPassTBHead'>{{ report }}</div>
-    <table id="mypassTable" class="table table-striped table-bordered display">
-        <thead>
-            <tr>
-                <th v-for="(c,index) in cols">{{c}}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <template v-for="(m, index) in data.SubStore">
-            <template v-if="m.myMerchantId != null && m.myMerchantId.length>0">
-                <tr>
-                    <td>{{m.RankNo}}</td>
-                    <td>{{m.myMerchantId}}</td>
-                    <td>{{m.myStoreName}}</td>
-                    <td>{{m.myActive}}</td>
-                    <td>{{m.myCreateTime}}
-                    </td>
-                </tr>
-            </template>
-            </template>
-        </tbody>
-    </table>`
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="myChart"></canvas>
+                    </div>
+                </div>
+            </div>`
         };
         reportApp = createApp(AppComponent, {
-            report: reportName,
-            cols: reportCols,
-            data: result
+            // report: reportName,
+            // cols: reportCols,
+            // data: result
         });
         reportApp.mount(mountId);
-
-        console.log(result);
-        console.log(result.SubStore);
+        //
+        const ctx = document.getElementById('myChart');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+                label: '銷售量',
+                data: [12, 19, 3, 5, 2, 3],
+                borderWidth: 1
+            }]
+            },
+            options: {
+            scales: {
+                y: {
+                beginAtZero: true
+                }
+            }
+            }
+        });
     }
 
     //***********************
