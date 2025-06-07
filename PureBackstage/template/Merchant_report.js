@@ -23,19 +23,18 @@
             props: ['cols'],
             template: `
             <div class="mb-2">
-            <div class="row form-inline" v-for="(c,index) in cols">
-                <template v-if="c.type == 'date'">
-                    <label v-bind:for="c.id" class="col-sm-1 justify-content-end">{{c.name}}：</label>
+            <div class="row form-inline mb-3">
+                <label for="MerchantId" class="col-sm-1 justify-content-end">特店代號：</label>
+                <div class='col-sm-11' >
+                    <input id="MerchantId" type='text' style="width:15%"/>
+                </div>
+            </div>
+            <div class="row form-inline mb-2">
+                    <label class="col-sm-1 justify-content-end">報表區間：</label>
                     <div class='col-sm-11' >
-                        <input v-bind:id="c.id" type='date' class='w-25'/>
+                        <input id="DateStart" type='date' style="width:15%" /> ~
+                        <input id="DateEnd" type='date'  style="width:15%" />
                     </div>
-                </template>
-                <template v-else>
-                    <label v-bind:for="c.id" class="col-sm-1 justify-content-end">{{c.name}}：</label>
-                    <div class='col-sm-11' >
-                        <input v-bind:id="c.id" type='text' class='w-25'/>
-                    </div>
-                </template>
             </div>
             <div class="row">
                 <div class="col-sm-1"></div>
