@@ -185,14 +185,14 @@ try {
                     loadScript("./template/"+id+".js")
                     .then(() => {
                         // 載入完成後執行的程式
-                        console.log('Script is ready to use.');
+                        //console.log('Script is ready to use.');
                         if (subTitle==undefined){
-                        setTitle("");
+                            setTitle("");
                         }
                         else
                         {
                             setTitle(subTitle);
-                            console.log("subTitle="+ subTitle);
+                            //console.log("subTitle="+ subTitle);
                         }
                     })
                     .catch((error) => {

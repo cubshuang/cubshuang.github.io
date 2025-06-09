@@ -90,7 +90,9 @@
             }
         });
         //initial
-         $('#MerchantId').val('Bear001');
+        $('#MerchantId').val('Bear001');
+        $('#DateStart').val(bsDate.LastMonth_Begin().replace('/','-').replace('/','-'));
+        $('#DateEnd').val(bsDate.LastMonth_End().replace('/','-').replace('/','-'));
     }
 
     //***********************
@@ -152,3 +154,5 @@
     //***********************
     //初始化
     queryMount();
+    
+
