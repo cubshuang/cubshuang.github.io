@@ -1,0 +1,122 @@
+:root { --col-count: 88; }     /*動態調整每一列的線條數量*/
+:root { --cornerWidth:20px; }  /*椅腳寬度*/
+:root { --lineWidth:5px; }  /*線條寬度*/
+
+/* div { border:1px dotted red;} */
+
+body{ background-color: #dcecf5; }
+            .mybox{ margin:1.25rem .5rem; width:98%; font-size:0.8rem; color: #074d81;}
+            .mybox1{ margin:1.25rem; width:90%; font-size:0.9rem; color: #074d81;}
+            .selbox {text-align: center!important;
+                display: flex;
+                flex-wrap: wrap;
+                --bs-gutter-x: 1.5rem;
+                --bs-gutter-y: 0;
+                /* display: flex; */
+                /* flex-wrap: wrap; */
+                margin-top: calc(-1 * var(--bs-gutter-y));
+                margin-right: calc(-.5 * var(--bs-gutter-x));
+                margin-left: calc(-.5 * var(--bs-gutter-x));  
+                /*font-size: 0.5rem;              */
+            }
+            .selbox div{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                           
+                position:relative;                
+                width:3.3rem;
+                height:3.0rem;
+                font-size: 0.75rem;
+                /* #b6bab7 */
+                color:#FFFFFF;
+                margin:2px;
+                /* padding:6px 10px; */
+                border:double #ccc 4px;
+                border-radius:50% 50%;
+            }
+            .selbox div.active{  border:dotted #ccc 3px; border-radius:50% 15%; opacity: 1; }
+            .mybtn { border-radius:10px 10px; margin: 2px; padding: 2px 2px; width:3.2rem;}
+            .mybtn1 { border-radius:8px 8px; margin: 2px 2px 2px 2px; padding: 2px 2px; width:3.4rem;}
+            .mybtn2 { border-radius:8px 8px; margin: 2px; padding: 1px 1px; width:2.8rem;}
+            .description{color:blue !important; margin-left: 2rem;}
+            .selbox #myCanvas,#aboveCanvas{
+                /*min-height: 56vh;min-width:75vh;  */
+                /*max-height: 80vh;max-width: 107vh;*/
+                max-height: 75vh;max-width: 100vh; 
+            }
+            .selBoxName { margin-bottom: -5rem;}
+            .selBold{font-weight: bolder; background-color: red; }
+            /* .selbox > div {text-align: center;} */
+            /* .myCanvas{width:100%;} */
+            .lineSel,.selbox{ margin:.25rem 1rem .25rem .25rem; }
+            /*#btnPrev,#btnNext{display: none;}*/
+            /*#btnNext,#btnSample{ margin-left: 1.5rem;}*/
+            #showLineNo { color:blue; position: absolute; left: 0.8rem;bottom:0px;}
+            #showLineNo span { font-weight: bold; }
+            #showLineNo span:nth-child(1){color:#074d81;; font-size: 1rem;}
+            #showLineNo span:nth-child(2){font-size: 2.0rem;}
+            #showLineNo span:nth-child(3){font-size: 1.2rem; color:#999;}
+            #showLineNo span:nth-child(4){font-size: 1rem; color:#555;}
+            /* 鑽顯顯示 */
+            .showVLine{
+                border: 2px double fuchsia!important;
+                margin:0 !important;
+            }
+            /* 內部線條區塊排列*/
+            .myZone {
+                background-color: rgb(215, 231, 238);
+                display: grid;
+                /* grid-template-columns: 12px 52px repeat(44, 12px) 52px; */
+                grid-template-columns: calc(var(--lineWidth) + 2px) calc(var(--cornerWidth) + 2px) repeat(var(--col-count), calc(var(--lineWidth) + 2px)) calc(var(--cornerWidth) + 2px);
+                /* grid-gap: 1px 1px; */
+                grid-gap:0;
+            }
+            /* 內部線條區塊*/
+            .myZone>div { 
+                border:1px solid #B7B7B7 ;
+                position:relative;
+                /* font-size:5px; */
+                font-size:var(--lineWidth);
+                margin-right: -1px; /* 覆蓋右邊框 */
+                margin-bottom: -1px; /* 覆蓋下邊框 */
+            }
+            /* 外框固定邊緣0 */
+            .myEpt{border:0px !important;}
+            /* 中間線條區塊 */
+            .myMM{min-height: var(--lineWidth);}
+            
+            /* 設定邊線的邊緣，對應椅子 */
+            .myTBT{ margin-top:2px !important;}
+            .myLRL{ margin-left:2px !important;}
+            .myTBB,.cornerTL,.cornerTR{ margin-bottom:2px !important;}
+            .myLRR,.cornerTL,.cornerBL{ margin-right:2px !important;}
+            .cornerBL,.cornerBR{ margin-top:3px !important;}
+            .cornerTR,.cornerBR{ margin-left:3px !important;}
+            /* 畫三角形 */
+            .cornerBR,.cornerBL,.cornerTL,.cornerTR{
+                border-style: solid solid solid solid;
+                /* 設定邊框大小可拼湊出任意形狀的三角形 */
+                /* border-width: 30px 30px 0px 0px; */
+                border-radius:5px;
+                /* 設定 width、height 可更好理解原理 */
+                height: 0px;
+                width: 0px;
+            }
+            /* 設定邊框大小可拼湊出任意形狀的三角形 */
+            .cornerTL {
+                border-color: transparent antiquewhite transparent transparent !important;
+                border-width: var(--cornerWidth) var(--cornerWidth) 0px 0px !important;
+            }
+            .cornerTR {
+                border-color: transparent transparent transparent antiquewhite !important;
+                border-width: var(--cornerWidth) 0px 0px var(--cornerWidth) !important;
+            }
+            .cornerBL {
+                border-color: antiquewhite transparent transparent transparent !important;
+                border-width: var(--cornerWidth) 0px 0px var(--cornerWidth) !important;
+            }
+            .cornerBR {
+                border-color: antiquewhite transparent transparent transparent !important;
+                border-width: var(--cornerWidth) var(--cornerWidth) 0px 0px !important;
+            }
