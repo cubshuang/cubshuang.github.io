@@ -56,8 +56,8 @@
                 <span style="font-size: 1rem; text-decoration: dotted; vertical-align:bottom; line-height: 1.75rem;">【直行(鑽線)】第<span id="vLineNo" style="margin:0 5px"></span>條</span>
                 <!-- 垂直鑽線 -->
                 <select id="vlineNum" class="mybtn1"></select>
-                <input type="button" class="mybtn1 btn-outline-success" id="btnUp" value="浮" >
                 <input type="button" class="mybtn1 btn-outline-success" id="btnDown" value="鑽" >
+                <input type="button" class="mybtn1 btn-outline-success" id="btnUp" value="浮" >
             </div>
         </div>
         <!-- 椅子呈現 -->
@@ -417,7 +417,7 @@
         $("#btnUp,#btnDown").click(function() {
             let _x= $('#vlineNum').val();
             let _y= $("#lineNum").val();
-            selBlock_S[_y][_x]=((this.id=="btnUp")?0:1);
+            selBlock_S[_y][_x]=((this.id=="btnDown")?0:1);
             showSelLine_v();
             if (_x*1<hLineCnt*1){
                 $('#vlineNum').val((_x*1+1).toString());
