@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang='zh-Hant'>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<title>Rack 02</title>
+<style>
+:root {
+	color-scheme: light;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	background: #dbe6e8;
+	font-family: 'Noto Sans TC', 'PingFang TC', sans-serif;
+	color: #24343a;
+}
+
+.page-status {
+	padding: 10px 24px;
+	background: #234a57;
+	color: #eef7fa;
+	font-size: 13px;
+	letter-spacing: 0.02em;
+}
+
+.page-status[data-tone='warning'] {
+	background: #8b5e1a;
+	color: #fff8e1;
+}
+
+.rack {
+	display: grid;
+	grid-template-columns: repeat(8, minmax(0, 1fr));
+	gap: 12px;
+	padding: 24px;
+	background: linear-gradient(180deg, #9bc0c9 0%, #83aeb9 100%);
+	align-items: start;
+}
+
+.cell {
+	position: relative;
+	height: 84px;
+	perspective: 700px;
+	cursor: pointer;
+	overflow: visible;
+	isolation: isolate;
+}
+
+.face {
+	position: absolute;
+	inset: 0;
+	padding: 10px 8px 8px;
+	background: #f5f5f5;
+	border: 2px solid #c33;
+	border-radius: 10px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	text-align: center;
+	font-weight: 700;
+	transform-origin: top;
+	transition: transform 0.25s ease, box-shadow 0.25s ease;
+	z-index: 2;
+	backface-visibility: hidden;
+	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.18);
+}
+
+.face-code {
+	width: 100%;
+	font-size: 15px;
+	line-height: 1.1;
+	letter-spacing: 0.05em;
+}
+
+.face-tags {
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 4px;
+}
+
+.face-tag {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 3px 6px;
+	border-radius: 999px;
+	font-size: 10px;
+	line-height: 1.15;
+	background: #e8eef0;
+	color: #31454c;
+}
+
+.tag-key {
+	font-weight: 700;
+	opacity: 0.74;
+}
+
+.tone-dog {
+	background: #d9eef8;
+	color: #22577a;
+}
+
+.tone-cat {
+	background: #fbe8d3;
+	color: #8f4a16;
+}
+
+.tone-reserved {
+	background: #fde7d8;
+	color: #a44800;
+}
+
+.tone-available {
+	background: #e2f4e8;
+	color: #216e3d;
+}
+
+.tone-info {
+	background: #e8f0ff;
+	color: #3054a5;
+}
+
+.tone-alert {
+	background: #ffe4e4;
+	color: #a02626;
+}
+
+.tone-neutral {
+	background: #eef1f3;
+	color: #465861;
+}
+
+.drawer {
+	position: absolute;
+	top: calc(100% + 8px);
+	left: 50%;
+	width: min(280px, calc(100vw - 32px));
+	min-height: 212px;
+	padding: 12px;
+	background: #fff8e1;
+	border: 1px solid rgba(130, 93, 26, 0.14);
+	border-radius: 14px;
+	z-index: 4;
+	transform: translate(-50%, -8px) scale(0.98);
+	transform-origin: top center;
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transition: transform 0.25s ease, opacity 0.25s ease, visibility 0s linear 0.25s;
+	box-shadow: 0 16px 26px rgba(48, 34, 10, 0.22);
+}
+
+.cell.drawer-align-left .drawer {
+	left: 0;
+	transform: translate(0, -8px) scale(0.98);
+	transform-origin: top left;
+}
+
+.cell.drawer-align-right .drawer {
+	left: auto;
+	right: 0;
+	transform: translate(0, -8px) scale(0.98);
+	transform-origin: top right;
+}
+
+.drawer-header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 10px;
+	margin-bottom: 10px;
+}
+
+.drawer-title {
+	font-size: 15px;
+	font-weight: 800;
+}
+
+.drawer-subtitle {
+	margin-top: 3px;
+	font-size: 12px;
+	color: #6b7280;
+}
+
+.drawer-status {
+	flex-shrink: 0;
+	padding: 4px 8px;
+	border-radius: 999px;
+	background: #f2ead3;
+	color: #7b5d1b;
+	font-size: 11px;
+	font-weight: 700;
+}
+
+.drawer-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 8px;
+	margin-bottom: 10px;
+}
+
+.drawer-item {
+	padding: 8px;
+	border-radius: 10px;
+	background: rgba(255, 255, 255, 0.72);
+}
+
+.drawer-item-label {
+	display: block;
+	margin-bottom: 4px;
+	font-size: 11px;
+	color: #6b7280;
+}
+
+.drawer-item-value {
+	display: block;
+	font-size: 13px;
+	font-weight: 700;
+}
+
+.drawer-note {
+	margin-bottom: 10px;
+	padding: 10px;
+	border-radius: 10px;
+	background: rgba(255, 253, 246, 0.95);
+	border: 1px dashed #d7b975;
+	font-size: 12px;
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+.drawer-note-title {
+	display: block;
+	margin-bottom: 6px;
+	font-size: 11px;
+	font-weight: 700;
+	color: #8b5e1a;
+}
+
+.drawer-actions {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.maintain-button,
+.icon-button,
+.primary-button,
+.secondary-button,
+.ghost-button {
+	border: 0;
+	border-radius: 10px;
+	cursor: pointer;
+	font: inherit;
+}
+
+.maintain-button {
+	padding: 8px 12px;
+	background: #234a57;
+	color: #fff;
+}
+
+.icon-button {
+	padding: 8px 12px;
+	background: #eef3f5;
+	color: #30444c;
+}
+
+.primary-button {
+	padding: 10px 16px;
+	background: #234a57;
+	color: #fff;
+}
+
+.secondary-button {
+	padding: 10px 16px;
+	background: #e7f0f3;
+	color: #234a57;
+}
+
+.ghost-button {
+	padding: 10px 16px;
+	background: transparent;
+	color: #4b5563;
+	border: 1px solid #d1d5db;
+}
+
+.cell.open {
+	z-index: 10;
+}
+
+.cell.open .face {
+	transform: rotateX(78deg) translateY(-8px);
+	box-shadow: 0 12px 18px rgba(0, 0, 0, 0.25);
+}
+
+.cell.open .drawer {
+	transform: translate(-50%, 0) scale(1);
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+	transition-delay: 0s;
+}
+
+.cell.open.drawer-align-left .drawer,
+.cell.open.drawer-align-right .drawer {
+	transform: translate(0, 0) scale(1);
+}
+
+.cell.reserved .face {
+	background: #fff2e8;
+	border-color: #ef8f35;
+}
+
+.cell:active:not(.open) .face {
+	transform: scale(0.97);
+}
+
+.modal[hidden] {
+	display: none;
+}
+
+.modal {
+	position: fixed;
+	inset: 0;
+	z-index: 50;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	background: rgba(15, 23, 42, 0.45);
+}
+
+.modal-panel {
+	width: min(780px, 100%);
+	max-height: calc(100vh - 40px);
+	overflow: auto;
+	padding: 22px;
+	border-radius: 20px;
+	background: #fff;
+	box-shadow: 0 24px 50px rgba(15, 23, 42, 0.28);
+}
+
+.modal-header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 18px;
+}
+
+.modal-kicker {
+	margin: 0;
+	font-size: 12px;
+	letter-spacing: 0.08em;
+	color: #8b5e1a;
+}
+
+.modal-header h2,
+.api-section h3 {
+	margin: 4px 0 0;
+}
+
+.modal-form {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 14px;
+}
+
+.modal-field {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.modal-field.full {
+	grid-column: 1 / -1;
+}
+
+.modal-field span {
+	font-size: 12px;
+	font-weight: 700;
+	color: #425466;
+}
+
+.modal-field input,
+.modal-field select,
+.modal-field textarea {
+	width: 100%;
+	padding: 10px 12px;
+	border: 1px solid #d7dfe3;
+	border-radius: 12px;
+	font: inherit;
+	color: #24343a;
+	background: #fff;
+}
+
+.modal-field input[readonly] {
+	background: #f7fafb;
+	color: #64748b;
+}
+
+.modal-field textarea {
+	resize: vertical;
+	min-height: 96px;
+}
+
+.modal-field input:focus,
+.modal-field select:focus,
+.modal-field textarea:focus,
+.maintain-button:focus,
+.icon-button:focus,
+.primary-button:focus,
+.secondary-button:focus,
+.ghost-button:focus {
+	outline: 2px solid rgba(35, 74, 87, 0.25);
+	outline-offset: 2px;
+}
+
+.modal-helper {
+	margin: 4px 0 0;
+	font-size: 12px;
+	color: #64748b;
+}
+
+.api-section {
+	margin-top: 20px;
+	padding-top: 18px;
+	border-top: 1px solid #e5e7eb;
+}
+
+.api-toolbar {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	margin-top: 14px;
+}
+
+.api-response {
+	margin-top: 14px;
+	padding: 14px;
+	min-height: 140px;
+	border-radius: 14px;
+	background: #0f172a;
+	color: #e5eef7;
+	white-space: pre-wrap;
+	overflow: auto;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	font-size: 12px;
+}
+
+@media (max-width: 960px) {
+	.rack {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 640px) {
+	.rack {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		padding: 16px;
+	}
+
+	.drawer {
+		left: 0;
+		width: min(280px, calc(100vw - 24px));
+		transform: translateY(-8px) scale(0.98);
+	}
+
+	.cell.open .drawer {
+		transform: translateY(0) scale(1);
+	}
+
+	.modal {
+		padding: 12px;
+	}
+
+	.modal-panel {
+		padding: 16px;
+		max-height: calc(100vh - 24px);
+	}
+
+	.modal-form,
+	.drawer-grid {
+		grid-template-columns: 1fr;
+	}
+}
+</style>
+</head>
+<body>
+<div class='page-status' id='pageStatus'>資料來源：載入中...</div>
+<div class='rack' id='rack'></div>
+
+<div class='modal' id='maintainModal' hidden>
+	<div class='modal-panel' role='dialog' aria-modal='true' aria-labelledby='modalTitle'>
+		<div class='modal-header'>
+			<div>
+				<p class='modal-kicker'>籠位維護</p>
+				<h2 id='modalTitle'>籠位維護</h2>
+			</div>
+			<button type='button' class='icon-button' id='closeModalButton' aria-label='關閉維護視窗'>關閉</button>
+		</div>
+
+		<form class='modal-form' id='maintenanceForm'>
+			<label class='modal-field'>
+				<span>籠位編號</span>
+				<input name='slotLabel' type='text' readonly>
+			</label>
+
+			<label class='modal-field'>
+				<span>最後更新</span>
+				<input name='lastUpdated' type='text' readonly>
+			</label>
+
+			<label class='modal-field'>
+				<span>動物屬性</span>
+				<input name='animalType' type='text' placeholder='例如：犬、貓、特殊照護'>
+			</label>
+
+			<label class='modal-field'>
+				<span>預約狀態</span>
+				<select name='reservationStatus'>
+					<option value='available'>未預約</option>
+					<option value='reserved'>已預約</option>
+				</select>
+			</label>
+
+			<label class='modal-field'>
+				<span>入住狀態</span>
+				<input name='occupancyStatus' type='text' placeholder='例如：空籠位、待入住、清潔中'>
+			</label>
+
+			<label class='modal-field'>
+				<span>動物名稱</span>
+				<input name='petName' type='text' placeholder='例如：Lucky'>
+			</label>
+
+			<label class='modal-field'>
+				<span>性別</span>
+				<input name='gender' type='text' placeholder='例如：公、母、未知'>
+			</label>
+
+			<label class='modal-field'>
+				<span>體型</span>
+				<input name='size' type='text' placeholder='例如：小型、中型、大型'>
+			</label>
+
+			<label class='modal-field'>
+				<span>照護人</span>
+				<input name='caretaker' type='text' placeholder='例如：櫃台排房'>
+			</label>
+
+			<label class='modal-field'>
+				<span>入住日期</span>
+				<input name='checkInDate' type='date'>
+			</label>
+
+			<label class='modal-field full'>
+				<span>額外屬性標籤</span>
+				<textarea name='extraAttributes' rows='4' placeholder='區域: 高位區&#10;照護等級: 特殊觀察'></textarea>
+				<p class='modal-helper'>每行一筆，格式為 標籤: 值。前兩個標籤會固定保留給動物屬性與預約狀態。</p>
+			</label>
+
+			<label class='modal-field full'>
+				<span>備註</span>
+				<textarea name='note' rows='4' placeholder='可放入住提醒、疫苗狀態、清潔需求'></textarea>
+			</label>
+		</form>
+
+		<section class='api-section'>
+			<h3>API 查詢與維護</h3>
+			<p class='modal-helper'>輸入實際 API 端點後，可先查詢遠端資料，再送出維護更新。</p>
+
+			<div class='modal-form'>
+				<label class='modal-field full'>
+					<span>API 端點</span>
+					<input id='apiEndpoint' type='text' placeholder='/api/cages/R01-001'>
+				</label>
+
+				<label class='modal-field'>
+					<span>維護方法</span>
+					<select id='apiMethod'>
+						<option value='PUT'>PUT</option>
+						<option value='PATCH'>PATCH</option>
+						<option value='POST'>POST</option>
+					</select>
+				</label>
+
+				<label class='modal-field full'>
+					<span>API 請求內容</span>
+					<textarea id='apiPayload' rows='10'></textarea>
+				</label>
+			</div>
+
+			<div class='api-toolbar'>
+				<button type='button' class='secondary-button' id='queryApiButton'>查詢 API</button>
+				<button type='button' class='primary-button' id='saveMaintenanceButton'>儲存維護</button>
+				<button type='button' class='ghost-button' id='cancelMaintenanceButton'>關閉</button>
+			</div>
+
+			<pre class='api-response' id='apiResponse'>尚未查詢任何 API。</pre>
+		</section>
+	</div>
+</div>
+
+<script src='./rack02-data.js'></script>
+<script>
+const rack = document.querySelector('#rack');
+const pageStatus = document.querySelector('#pageStatus');
+const maintainModal = document.querySelector('#maintainModal');
+const maintenanceForm = document.querySelector('#maintenanceForm');
+const modalTitle = document.querySelector('#modalTitle');
+const apiEndpointInput = document.querySelector('#apiEndpoint');
+const apiMethodSelect = document.querySelector('#apiMethod');
+const apiPayloadInput = document.querySelector('#apiPayload');
+const apiResponse = document.querySelector('#apiResponse');
+const queryApiButton = document.querySelector('#queryApiButton');
+const saveMaintenanceButton = document.querySelector('#saveMaintenanceButton');
+const closeModalButton = document.querySelector('#closeModalButton');
+const cancelMaintenanceButton = document.querySelector('#cancelMaintenanceButton');
+const reservedCells = new Set([2]);
+const newline = String.fromCharCode(10);
+const dataSourceUrl = './rack02-data.json';
+const scriptDataSourceUrl = './rack02-data.js';
+const defaultRackMeta = {
+	rackId: 'R01',
+	slotCount: 80,
+	apiBaseUrl: '/api/racks/R01/slots',
+	defaults: {
+		animal: {},
+		reservation: {},
+		care: {
+			lastUpdated: '2026-04-25 10:00',
+			note: '目前可安排清潔與下一筆入住。',
+		},
+		tags: [],
+	},
+};
+
+const state = {
+	activeCellNumber: null,
+	rackMeta: structuredClone(defaultRackMeta),
+};
+
+let rackData = [];
+
+function getDefaultApiEndpoint(number) {
+	return `${state.rackMeta.apiBaseUrl}/${getSlotLabel(number)}`;
+}
+
+function getSlotLabel(number) {
+	return `${state.rackMeta.rackId}-${String(number).padStart(3, '0')}`;
+}
+
+function escapeHtml(value) {
+	return String(value ?? '')
+		.replaceAll('&', '&amp;')
+		.replaceAll('<', '&lt;')
+		.replaceAll('>', '&gt;')
+		.replaceAll(String.fromCharCode(34), '&quot;')
+		.replaceAll(String.fromCharCode(39), '&#39;');
+}
+
+function createCellData(number) {
+	const isReserved = reservedCells.has(number);
+	const defaults = state.rackMeta.defaults || {};
+	const defaultAnimal = defaults.animal || {};
+	const defaultReservation = defaults.reservation || {};
+	const defaultCare = defaults.care || {};
+	const defaultTags = normalizeExtraAttributes(defaults.tags);
+	const animalType = number % 6 === 0 ? '貓' : '犬';
+	const zone = number > 72 ? '高位區' : number % 10 === 0 ? '隔離區' : '一般區';
+	const generatedTags = zone === '一般區'
+		? []
+		: [{ label: '區域', value: zone, tone: zone === '隔離區' ? 'alert' : 'info' }];
+
+	return {
+		number,
+		label: getSlotLabel(number),
+		animalType: defaultAnimal.species || animalType,
+		reserved: defaultReservation.isReserved ?? isReserved,
+		reservationStatus: defaultReservation.status || (isReserved ? '已預約' : '未預約'),
+		occupancyStatus: defaultCare.occupancyStatus || (isReserved ? '待入住' : '空籠位'),
+		petName: defaultAnimal.name || (isReserved ? `待入住-${String(number).padStart(2, '0')}` : '尚未指派'),
+		gender: defaultAnimal.gender || (number % 2 === 0 ? '母' : '公'),
+		size: defaultAnimal.size || (number % 5 === 0 ? '大型' : number % 3 === 0 ? '中型' : '小型'),
+		caretaker: defaultCare.caretaker || (isReserved ? '櫃台排房' : '未指派'),
+		checkInDate: defaultReservation.checkInDate || (isReserved ? '2026-04-30' : ''),
+		lastUpdated: defaultCare.lastUpdated || '2026-04-25 10:00',
+		note: defaultCare.note || (isReserved ? '待確認疫苗證明與晶片資料。' : '目前可安排清潔與下一筆入住。'),
+		extraAttributes: [...defaultTags, ...generatedTags],
+		apiEndpoint: getDefaultApiEndpoint(number),
+	};
+}
+
+function normalizeRackMeta(payload) {
+	const defaults = payload?.defaults || {};
+	return {
+		...structuredClone(defaultRackMeta),
+		rackId: String(payload?.rackId ?? defaultRackMeta.rackId),
+		slotCount: Number.isInteger(payload?.slotCount) ? payload.slotCount : defaultRackMeta.slotCount,
+		apiBaseUrl: String(payload?.apiBaseUrl ?? `/api/racks/${payload?.rackId ?? defaultRackMeta.rackId}/slots`),
+		defaults: {
+			animal: defaults.animal && typeof defaults.animal === 'object' ? defaults.animal : {},
+			reservation: defaults.reservation && typeof defaults.reservation === 'object' ? defaults.reservation : {},
+			care: defaults.care && typeof defaults.care === 'object' ? defaults.care : structuredClone(defaultRackMeta.defaults.care),
+			tags: Array.isArray(defaults.tags) ? defaults.tags : [],
+		},
+	};
+}
+
+function normalizeExtraAttributes(attributes) {
+	if (!Array.isArray(attributes)) {
+		return [];
+	}
+
+	return attributes.map(attribute => ({
+		label: String(attribute.label ?? '自訂屬性'),
+		value: String(attribute.value ?? ''),
+		tone: String(attribute.tone ?? 'neutral'),
+	}));
+}
+
+function mergeCellData(rawCell) {
+	const number = Number(rawCell?.slotNumber ?? rawCell?.number);
+	if (!Number.isInteger(number) || number < 1 || number > 80) {
+		return null;
+	}
+
+	const fallback = createCellData(number);
+	const animal = rawCell?.animal && typeof rawCell.animal === 'object' ? rawCell.animal : {};
+	const reservation = rawCell?.reservation && typeof rawCell.reservation === 'object' ? rawCell.reservation : {};
+	const care = rawCell?.care && typeof rawCell.care === 'object' ? rawCell.care : {};
+	const api = rawCell?.api && typeof rawCell.api === 'object' ? rawCell.api : {};
+	const reserved = typeof reservation.isReserved === 'boolean'
+		? reservation.isReserved
+		: typeof rawCell.reserved === 'boolean'
+			? rawCell.reserved
+			: fallback.reserved;
+	const reservationStatus = reservation.status ?? rawCell.reservationStatus ?? (reserved ? '已預約' : '未預約');
+	const extraAttributes = rawCell.tags !== undefined
+		? normalizeExtraAttributes(rawCell.tags.map(tag => ({
+			label: tag.key ?? tag.label,
+			value: tag.value,
+			tone: tag.tone,
+		})))
+		: rawCell.extraAttributes === undefined
+			? fallback.extraAttributes
+			: normalizeExtraAttributes(rawCell.extraAttributes);
+	const slotLabel = rawCell.slotCode ?? rawCell.label ?? fallback.label;
+
+	return {
+		...fallback,
+		...rawCell,
+		number,
+		label: String(slotLabel),
+		animalType: String(animal.species ?? rawCell.animalType ?? fallback.animalType),
+		reserved,
+		reservationStatus: String(reservationStatus),
+		occupancyStatus: String(care.occupancyStatus ?? rawCell.occupancyStatus ?? fallback.occupancyStatus),
+		petName: String(animal.name ?? rawCell.petName ?? fallback.petName),
+		gender: String(animal.gender ?? rawCell.gender ?? fallback.gender),
+		size: String(animal.size ?? rawCell.size ?? fallback.size),
+		caretaker: String(care.caretaker ?? rawCell.caretaker ?? fallback.caretaker),
+		checkInDate: String(reservation.checkInDate ?? rawCell.checkInDate ?? fallback.checkInDate),
+		lastUpdated: String(care.lastUpdated ?? rawCell.lastUpdated ?? fallback.lastUpdated),
+		note: String(care.note ?? rawCell.note ?? fallback.note),
+		extraAttributes,
+		apiEndpoint: String(api.endpoint ?? rawCell.apiEndpoint ?? fallback.apiEndpoint),
+	};
+}
+
+function buildRackDataFromSource(sourceSlots) {
+	const mergedMap = new Map();
+
+	if (Array.isArray(sourceSlots)) {
+		sourceSlots.forEach(rawCell => {
+			const mergedCell = mergeCellData(rawCell);
+			if (mergedCell) {
+				mergedMap.set(mergedCell.number, mergedCell);
+			}
+		});
+	}
+
+	return Array.from({ length: state.rackMeta.slotCount }, (_, index) => {
+		const number = index + 1;
+		return mergedMap.get(number) ?? createCellData(number);
+	});
+}
+
+function applyRackPayload(payload) {
+	state.rackMeta = normalizeRackMeta(payload);
+	const sourceSlots = Array.isArray(payload) ? payload : payload?.slots;
+	rackData = buildRackDataFromSource(sourceSlots);
+}
+
+function getScriptRackData() {
+	if (typeof window !== 'undefined' && window.rackDataSource) {
+		return window.rackDataSource;
+	}
+
+	return null;
+}
+
+async function loadRackData() {
+	pageStatus.dataset.tone = 'info';
+	pageStatus.textContent = `資料來源：正在讀取 ${dataSourceUrl}`;
+
+	try {
+		if (window.location.protocol === 'file:') {
+			throw new Error('本機檔案模式無法直接 fetch JSON');
+		}
+
+		const response = await fetch(dataSourceUrl, {
+			cache: 'no-store',
+			headers: {
+				Accept: 'application/json',
+			},
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP ${response.status}`);
+		}
+
+		const payload = await response.json();
+		applyRackPayload(payload);
+		pageStatus.dataset.tone = 'info';
+		pageStatus.textContent = `資料來源：${dataSourceUrl}，${state.rackMeta.rackId} 共 ${rackData.length} 筆籠位資料`;
+	} catch (error) {
+		const scriptPayload = getScriptRackData();
+
+		if (scriptPayload) {
+			applyRackPayload(scriptPayload);
+			pageStatus.dataset.tone = 'info';
+			pageStatus.textContent = `資料來源：${dataSourceUrl} 讀取失敗，已改用 ${scriptDataSourceUrl}。${state.rackMeta.rackId} 共 ${rackData.length} 筆籠位資料`;
+			return;
+		}
+
+		state.rackMeta = structuredClone(defaultRackMeta);
+		rackData = Array.from({ length: state.rackMeta.slotCount }, (_, index) => createCellData(index + 1));
+		pageStatus.dataset.tone = 'warning';
+		pageStatus.textContent = `資料來源：${dataSourceUrl} 與 ${scriptDataSourceUrl} 都讀取失敗，已改用頁面預設資料。${error.message}`;
+	}
+}
+
+function getCellData(number) {
+	return rackData[number - 1];
+}
+
+function getFaceAttributes(cellData) {
+	return [
+		{
+			label: '動物',
+			value: cellData.animalType,
+			tone: cellData.animalType.includes('貓') ? 'cat' : 'dog',
+		},
+		{
+			label: '預約',
+			value: cellData.reserved ? '已預約' : '未預約',
+			tone: cellData.reserved ? 'reserved' : 'available',
+		},
+		...cellData.extraAttributes,
+	];
+}
+
+function getDrawerFields(cellData) {
+	return [
+		{ label: '動物屬性', value: cellData.animalType },
+		{ label: '預約狀態', value: cellData.reservationStatus },
+		{ label: '入住狀態', value: cellData.occupancyStatus },
+		{ label: '動物名稱', value: cellData.petName },
+		{ label: '性別', value: cellData.gender },
+		{ label: '體型', value: cellData.size },
+		{ label: '照護人', value: cellData.caretaker },
+		{ label: '入住日期', value: cellData.checkInDate || '未安排' },
+	];
+}
+
+function renderFaceTag(attribute) {
+	return `
+		<span class='face-tag tone-${attribute.tone || 'neutral'}'>
+			<span class='tag-key'>${escapeHtml(attribute.label)}</span>
+			<span>${escapeHtml(attribute.value)}</span>
+		</span>
+	`;
+}
+
+function renderDrawerItem(field) {
+	return `
+		<div class='drawer-item'>
+			<span class='drawer-item-label'>${escapeHtml(field.label)}</span>
+			<span class='drawer-item-value'>${escapeHtml(field.value)}</span>
+		</div>
+	`;
+}
+
+function renderCellContent(cell, cellData) {
+	const isOpen = cell.classList.contains('open');
+	const faceTags = getFaceAttributes(cellData).map(renderFaceTag).join('');
+	const drawerFields = getDrawerFields(cellData).map(renderDrawerItem).join('');
+	const extraAttributesText = cellData.extraAttributes.length
+		? cellData.extraAttributes
+				.map(attribute => `${escapeHtml(attribute.label)}: ${escapeHtml(attribute.value)}`)
+				.join('<br>')
+		: '尚未設定其他屬性。';
+
+	cell.className = ['cell', cellData.reserved ? 'reserved' : '', isOpen ? 'open' : '']
+		.filter(Boolean)
+		.join(' ');
+	cell.dataset.number = String(cellData.number);
+	cell.innerHTML = `
+		<div class='face'>
+			<div class='face-code'>${escapeHtml(cellData.label)}</div>
+			<div class='face-tags'>${faceTags}</div>
+		</div>
+		<div class='drawer'>
+			<div class='drawer-header'>
+				<div>
+					<div class='drawer-title'>${escapeHtml(cellData.label)}</div>
+					<div class='drawer-subtitle'>${escapeHtml(cellData.petName)}</div>
+				</div>
+				<span class='drawer-status'>${escapeHtml(cellData.occupancyStatus)}</span>
+			</div>
+			<div class='drawer-grid'>${drawerFields}</div>
+			<div class='drawer-note'>
+				<span class='drawer-note-title'>備註</span>
+				${escapeHtml(cellData.note)}
+			</div>
+			<div class='drawer-note'>
+				<span class='drawer-note-title'>額外標籤</span>
+				${extraAttributesText}
+			</div>
+			<div class='drawer-actions'>
+				<button type='button' class='maintain-button'>維護</button>
+			</div>
+		</div>
+	`;
+
+	const drawer = cell.querySelector('.drawer');
+	const maintainButton = cell.querySelector('.maintain-button');
+
+	drawer.addEventListener('click', event => {
+		event.stopPropagation();
+	});
+
+	maintainButton.addEventListener('click', event => {
+		event.stopPropagation();
+		openMaintenanceModal(cellData.number);
+	});
+}
+
+function createCell(number) {
+	const cell = document.createElement('div');
+	renderCellContent(cell, getCellData(number));
+	cell.addEventListener('click', () => toggleCell(cell));
+	return cell;
+}
+
+function renderRack() {
+	rack.innerHTML = '';
+	rackData.forEach(cellData => {
+		rack.appendChild(createCell(cellData.number));
+	});
+}
+
+function renderSingleCell(number) {
+	const cell = rack.querySelector(`[data-number='${number}']`);
+	if (cell) {
+		renderCellContent(cell, getCellData(number));
+		if (cell.classList.contains('open')) {
+			updateDrawerAlignment(cell);
+		}
+	}
+}
+
+function resetDrawerAlignment(cell) {
+	cell.classList.remove('drawer-align-left', 'drawer-align-right');
+}
+
+function updateDrawerAlignment(cell) {
+	const drawer = cell.querySelector('.drawer');
+	if (!drawer) {
+		return;
+	}
+
+	resetDrawerAlignment(cell);
+
+	const viewportPadding = 16;
+	const drawerRect = drawer.getBoundingClientRect();
+	const fitsLeft = drawerRect.left >= viewportPadding;
+	const fitsRight = drawerRect.right <= window.innerWidth - viewportPadding;
+
+	if (!fitsLeft) {
+		cell.classList.add('drawer-align-left');
+		return;
+	}
+
+	if (!fitsRight) {
+		cell.classList.add('drawer-align-right');
+	}
+}
+
+function syncOpenDrawerAlignment() {
+	const openCell = rack.querySelector('.cell.open');
+	if (openCell) {
+		updateDrawerAlignment(openCell);
+	}
+}
+
+function toggleCell(cell) {
+	const isOpen = cell.classList.contains('open');
+
+	document.querySelectorAll('.cell.open').forEach(currentCell => {
+		currentCell.classList.remove('open');
+		resetDrawerAlignment(currentCell);
+	});
+
+	if (!isOpen) {
+		cell.classList.add('open');
+		updateDrawerAlignment(cell);
+	}
+}
+
+function serializeExtraAttributes(attributes) {
+	return attributes.map(attribute => `${attribute.label}: ${attribute.value}`).join(newline);
+}
+
+function parseExtraAttributes(text) {
+	return text
+		.split(newline)
+		.map(line => line.trim())
+		.filter(Boolean)
+		.map(line => {
+			const separatorIndex = line.indexOf(':');
+
+			if (separatorIndex === -1) {
+				return {
+					label: '自訂屬性',
+					value: line,
+					tone: 'neutral',
+				};
+			}
+
+			return {
+				label: line.slice(0, separatorIndex).trim() || '自訂屬性',
+				value: line.slice(separatorIndex + 1).trim() || '未填寫',
+				tone: 'neutral',
+			};
+		});
+}
+
+function fillMaintenanceForm(cellData) {
+	maintenanceForm.elements.slotLabel.value = cellData.label;
+	maintenanceForm.elements.lastUpdated.value = cellData.lastUpdated || '';
+	maintenanceForm.elements.animalType.value = cellData.animalType || '';
+	maintenanceForm.elements.reservationStatus.value = cellData.reserved ? 'reserved' : 'available';
+	maintenanceForm.elements.occupancyStatus.value = cellData.occupancyStatus || '';
+	maintenanceForm.elements.petName.value = cellData.petName || '';
+	maintenanceForm.elements.gender.value = cellData.gender || '';
+	maintenanceForm.elements.size.value = cellData.size || '';
+	maintenanceForm.elements.caretaker.value = cellData.caretaker || '';
+	maintenanceForm.elements.checkInDate.value = cellData.checkInDate || '';
+	maintenanceForm.elements.extraAttributes.value = serializeExtraAttributes(cellData.extraAttributes || []);
+	maintenanceForm.elements.note.value = cellData.note || '';
+	apiEndpointInput.value = cellData.apiEndpoint || '';
+	apiEndpointInput.placeholder = getDefaultApiEndpoint(cellData.number);
+}
+
+function collectFormData(options = {}) {
+	const currentCell = getCellData(state.activeCellNumber);
+	const reserved = maintenanceForm.elements.reservationStatus.value === 'reserved';
+
+	return {
+		number: currentCell.number,
+		label: currentCell.label,
+		animalType: maintenanceForm.elements.animalType.value.trim() || '未指定',
+		reserved,
+		reservationStatus: reserved ? '已預約' : '未預約',
+		occupancyStatus: maintenanceForm.elements.occupancyStatus.value.trim() || (reserved ? '待入住' : '空籠位'),
+		petName: maintenanceForm.elements.petName.value.trim() || '尚未指派',
+		gender: maintenanceForm.elements.gender.value.trim() || '未填寫',
+		size: maintenanceForm.elements.size.value.trim() || '未填寫',
+		caretaker: maintenanceForm.elements.caretaker.value.trim() || '未指派',
+		checkInDate: maintenanceForm.elements.checkInDate.value.trim(),
+		lastUpdated: options.persist
+			? new Date().toLocaleString('zh-TW', { hour12: false })
+			: maintenanceForm.elements.lastUpdated.value || currentCell.lastUpdated,
+		note: maintenanceForm.elements.note.value.trim() || '無',
+		extraAttributes: parseExtraAttributes(maintenanceForm.elements.extraAttributes.value),
+		apiEndpoint: apiEndpointInput.value.trim(),
+	};
+}
+
+function buildPayload(number, data) {
+	return {
+		rackId: state.rackMeta.rackId,
+		slotNumber: number,
+		slotCode: data.label,
+		animal: {
+			species: data.animalType,
+			name: data.petName,
+			gender: data.gender,
+			size: data.size,
+		},
+		reservation: {
+			isReserved: data.reserved,
+			status: data.reservationStatus,
+			checkInDate: data.checkInDate || null,
+		},
+		care: {
+			occupancyStatus: data.occupancyStatus,
+			caretaker: data.caretaker,
+			lastUpdated: data.lastUpdated,
+			note: data.note,
+		},
+		tags: data.extraAttributes.map(attribute => ({
+			key: attribute.label,
+			value: attribute.value,
+			tone: attribute.tone || 'neutral',
+		})),
+		api: {
+			endpoint: data.apiEndpoint || getDefaultApiEndpoint(number),
+			saveMethod: apiMethodSelect.value,
+		},
+	};
+}
+
+function updateApiPayloadPreview(sourceData) {
+	if (!state.activeCellNumber) {
+		return;
+	}
+
+	const payloadSource = sourceData || collectFormData();
+	apiPayloadInput.value = JSON.stringify(buildPayload(state.activeCellNumber, payloadSource), null, 2);
+}
+
+function updateLocalCell(number, updates) {
+	const currentCell = getCellData(number);
+	const reserved = updates.reserved ?? currentCell.reserved;
+
+	rackData[number - 1] = {
+		...currentCell,
+		...updates,
+		number: currentCell.number,
+		label: currentCell.label,
+		reserved,
+		reservationStatus: reserved ? '已預約' : '未預約',
+		apiEndpoint: updates.apiEndpoint ?? currentCell.apiEndpoint,
+	};
+
+	renderSingleCell(number);
+}
+
+function openMaintenanceModal(number) {
+	state.activeCellNumber = number;
+	const cellData = getCellData(number);
+
+	modalTitle.textContent = `${cellData.label} 維護`;
+	fillMaintenanceForm(cellData);
+	updateApiPayloadPreview(cellData);
+	apiResponse.textContent = '可先查詢遠端資料，再決定是否送出維護更新。';
+	maintainModal.hidden = false;
+	document.body.style.overflow = 'hidden';
+}
+
+function closeMaintenanceModal() {
+	maintainModal.hidden = true;
+	state.activeCellNumber = null;
+	document.body.style.overflow = '';
+}
+
+function normalizeApiData(data) {
+	if (!data || typeof data !== 'object' || Array.isArray(data)) {
+		return null;
+	}
+
+	const normalized = {};
+	const animal = data.animal && typeof data.animal === 'object' ? data.animal : null;
+	const reservation = data.reservation && typeof data.reservation === 'object' ? data.reservation : null;
+	const care = data.care && typeof data.care === 'object' ? data.care : null;
+	const tags = Array.isArray(data.tags) ? data.tags : null;
+	const animalType = data.animalType ?? data.animal_type;
+	const reservationStatus = data.reservationStatus ?? data.reservation_status;
+	const occupancyStatus = data.occupancyStatus ?? data.status;
+	const petName = data.petName ?? data.name;
+	const gender = data.gender;
+	const size = data.size;
+	const caretaker = data.caretaker ?? data.owner;
+	const checkInDate = data.checkInDate ?? data.check_in_date;
+	const note = data.note ?? data.memo;
+	const reservedValue = data.reserved ?? data.isReserved;
+
+	if (animal?.species) {
+		normalized.animalType = String(animal.species);
+	} else if (animalType) {
+		normalized.animalType = String(animalType);
+	}
+
+	if (typeof reservation?.isReserved === 'boolean') {
+		normalized.reserved = reservation.isReserved;
+	} else if (typeof reservedValue === 'boolean') {
+		normalized.reserved = reservedValue;
+	}
+
+	if (reservation?.status) {
+		normalized.reservationStatus = String(reservation.status);
+		if (normalized.reserved === undefined) {
+			normalized.reserved = /預約|reserved|booked|true/i.test(normalized.reservationStatus);
+		}
+	} else if (reservationStatus) {
+		normalized.reservationStatus = String(reservationStatus);
+		if (normalized.reserved === undefined) {
+			normalized.reserved = /預約|reserved|booked|true/i.test(normalized.reservationStatus);
+		}
+	}
+
+	if (care?.occupancyStatus) {
+		normalized.occupancyStatus = String(care.occupancyStatus);
+	} else if (occupancyStatus) {
+		normalized.occupancyStatus = String(occupancyStatus);
+	}
+
+	if (animal?.name) {
+		normalized.petName = String(animal.name);
+	} else if (petName) {
+		normalized.petName = String(petName);
+	}
+
+	if (animal?.gender) {
+		normalized.gender = String(animal.gender);
+	} else if (gender) {
+		normalized.gender = String(gender);
+	}
+
+	if (animal?.size) {
+		normalized.size = String(animal.size);
+	} else if (size) {
+		normalized.size = String(size);
+	}
+
+	if (care?.caretaker) {
+		normalized.caretaker = String(care.caretaker);
+	} else if (caretaker) {
+		normalized.caretaker = String(caretaker);
+	}
+
+	if (reservation?.checkInDate) {
+		normalized.checkInDate = String(reservation.checkInDate);
+	} else if (checkInDate) {
+		normalized.checkInDate = String(checkInDate);
+	}
+
+	if (care?.note) {
+		normalized.note = String(care.note);
+	} else if (note) {
+		normalized.note = String(note);
+	}
+
+	if (care?.lastUpdated) {
+		normalized.lastUpdated = String(care.lastUpdated);
+	}
+
+	if (data.api && typeof data.api === 'object' && data.api.endpoint) {
+		normalized.apiEndpoint = String(data.api.endpoint);
+	}
+
+	if (tags) {
+		normalized.extraAttributes = tags.map(tag => ({
+			label: String(tag.key ?? tag.label ?? '自訂屬性'),
+			value: String(tag.value ?? ''),
+			tone: String(tag.tone ?? 'neutral'),
+		}));
+	} else if (Array.isArray(data.extraAttributes)) {
+		normalized.extraAttributes = data.extraAttributes.map(attribute => ({
+			label: String(attribute.label ?? '自訂屬性'),
+			value: String(attribute.value ?? ''),
+			tone: String(attribute.tone ?? 'neutral'),
+		}));
+	} else if (data.attributes && typeof data.attributes === 'object' && !Array.isArray(data.attributes)) {
+		normalized.extraAttributes = Object.entries(data.attributes).map(([label, value]) => ({
+			label,
+			value: String(value),
+			tone: 'neutral',
+		}));
+	}
+
+	if (normalized.reserved !== undefined && !normalized.reservationStatus) {
+		normalized.reservationStatus = normalized.reserved ? '已預約' : '未預約';
+	}
+
+	return Object.keys(normalized).length ? normalized : null;
+}
+
+function applyApiDataToForm(data) {
+	if (!state.activeCellNumber) {
+		return false;
+	}
+
+	const normalized = normalizeApiData(data);
+	if (!normalized) {
+		return false;
+	}
+
+	const currentCell = getCellData(state.activeCellNumber);
+	const merged = {
+		...currentCell,
+		...normalized,
+		reserved: normalized.reserved ?? currentCell.reserved,
+	};
+
+	fillMaintenanceForm(merged);
+	updateApiPayloadPreview(merged);
+	return true;
+}
+
+async function readApiResponse(response) {
+	const contentType = response.headers.get('content-type') || '';
+
+	if (contentType.includes('application/json')) {
+		const json = await response.json();
+		return {
+			json,
+			prettyText: JSON.stringify(json, null, 2),
+		};
+	}
+
+	const text = await response.text();
+	return {
+		json: null,
+		prettyText: text || '(空白回應)',
+	};
+}
+
+function getRequestPayload(number, data) {
+	const raw = apiPayloadInput.value.trim();
+	if (!raw) {
+		return buildPayload(number, data);
+	}
+
+	try {
+		return JSON.parse(raw);
+	} catch (error) {
+		throw new Error('API 請求內容不是有效的 JSON。');
+	}
+}
+
+async function queryApiData() {
+	if (!state.activeCellNumber) {
+		return;
+	}
+
+	const endpoint = apiEndpointInput.value.trim();
+	if (!endpoint) {
+		apiResponse.textContent = `請先輸入 API 端點，例如 ${getDefaultApiEndpoint(state.activeCellNumber)}。`;
+		return;
+	}
+
+	apiResponse.textContent = '查詢中...';
+
+	try {
+		const response = await fetch(endpoint, {
+			method: 'GET',
+			headers: {
+				Accept: 'application/json',
+			},
+		});
+
+		const result = await readApiResponse(response);
+		apiResponse.textContent = [response.ok ? '' : `HTTP ${response.status}`, result.prettyText]
+			.filter(Boolean)
+			.join(newline.repeat(2));
+
+		if (result.json) {
+			applyApiDataToForm(result.json);
+		}
+	} catch (error) {
+		apiResponse.textContent = `API 查詢失敗：${error.message}`;
+	}
+}
+
+async function saveMaintenance() {
+	if (!state.activeCellNumber) {
+		return;
+	}
+
+	const number = state.activeCellNumber;
+	const updates = collectFormData({ persist: true });
+	maintenanceForm.elements.lastUpdated.value = updates.lastUpdated;
+	updateLocalCell(number, updates);
+	updateApiPayloadPreview(getCellData(number));
+
+	const endpoint = apiEndpointInput.value.trim();
+	if (!endpoint) {
+		apiResponse.textContent = '已更新頁面資料；目前未設定 API 端點，因此沒有送出遠端維護。';
+		return;
+	}
+
+	let payload;
+
+	try {
+		payload = getRequestPayload(number, updates);
+	} catch (error) {
+		apiResponse.textContent = error.message;
+		return;
+	}
+
+	apiResponse.textContent = '送出維護請求中...';
+
+	try {
+		const response = await fetch(endpoint, {
+			method: apiMethodSelect.value,
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(payload),
+		});
+
+		const result = await readApiResponse(response);
+		apiResponse.textContent = [
+			response.ok ? '遠端同步完成。' : `遠端同步失敗，HTTP ${response.status}。`,
+			result.prettyText,
+		].join(newline.repeat(2));
+
+		if (response.ok && result.json) {
+			const normalized = normalizeApiData(result.json);
+			if (normalized) {
+				updateLocalCell(number, {
+					...updates,
+					...normalized,
+					reserved: normalized.reserved ?? updates.reserved,
+				});
+				fillMaintenanceForm(getCellData(number));
+				updateApiPayloadPreview(getCellData(number));
+			}
+		}
+	} catch (error) {
+		apiResponse.textContent = `本地資料已更新，但遠端同步失敗：${error.message}`;
+	}
+}
+
+function handleFormChange() {
+	if (!state.activeCellNumber) {
+		return;
+	}
+
+	updateApiPayloadPreview();
+}
+
+maintenanceForm.addEventListener('submit', event => {
+	event.preventDefault();
+});
+
+maintenanceForm.addEventListener('input', handleFormChange);
+maintenanceForm.addEventListener('change', handleFormChange);
+apiPayloadInput.addEventListener('focus', event => {
+	event.target.select();
+});
+queryApiButton.addEventListener('click', queryApiData);
+saveMaintenanceButton.addEventListener('click', saveMaintenance);
+closeModalButton.addEventListener('click', closeMaintenanceModal);
+cancelMaintenanceButton.addEventListener('click', closeMaintenanceModal);
+
+maintainModal.addEventListener('click', event => {
+	if (event.target === maintainModal) {
+		closeMaintenanceModal();
+	}
+});
+
+document.addEventListener('keydown', event => {
+	if (event.key === 'Escape' && !maintainModal.hidden) {
+		closeMaintenanceModal();
+	}
+});
+
+window.addEventListener('resize', syncOpenDrawerAlignment);
+
+async function initializeRack() {
+	await loadRackData();
+	renderRack();
+}
+
+initializeRack();
+</script>
+</body>
+</html>
