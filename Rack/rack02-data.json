@@ -1,0 +1,309 @@
+{
+  "rackId": "R01",
+  "slotCount": 80,
+  "apiBaseUrl": "/api/racks/R01/slots",
+  "defaults": {
+    "animal": {},
+    "reservation": {
+      "isReserved": false,
+      "status": "未預約",
+      "checkInDate": null
+    },
+    "care": {
+      "occupancyStatus": "空籠位",
+      "caretaker": "未指派",
+      "lastUpdated": "2026-04-25 10:00",
+      "note": "目前可安排清潔與下一筆入住。"
+    },
+    "tags": []
+  },
+  "slots": [
+    {
+      "slotNumber": 2,
+      "slotCode": "R01-002",
+      "animal": {
+        "species": "犬",
+        "name": "Milo",
+        "gender": "母",
+        "size": "小型"
+      },
+      "reservation": {
+        "isReserved": true,
+        "status": "已預約",
+        "checkInDate": "2026-04-30"
+      },
+      "care": {
+        "occupancyStatus": "待入住",
+        "caretaker": "櫃台排房",
+        "lastUpdated": "2026-04-25 10:00",
+        "note": "待確認疫苗證明與晶片資料。"
+      },
+      "tags": [
+        {
+          "key": "飼主",
+          "value": "王小姐",
+          "tone": "info"
+        }
+      ],
+      "api": {
+        "endpoint": "/api/racks/R01/slots/R01-002",
+        "queryMethod": "GET",
+        "saveMethod": "PUT"
+      }
+    },
+    {
+      "slotNumber": 6,
+      "animal": {
+        "species": "貓",
+        "name": "Nori",
+        "gender": "母",
+        "size": "中型"
+      },
+      "reservation": {
+        "isReserved": false,
+        "status": "未預約",
+        "checkInDate": null
+      },
+      "care": {
+        "occupancyStatus": "清潔中",
+        "caretaker": "早班清潔",
+        "lastUpdated": "2026-04-25 09:20",
+        "note": "已完成消毒，等待乾燥後可重新開放。"
+      },
+      "tags": [
+        {
+          "key": "區域",
+          "value": "貓房",
+          "tone": "cat"
+        },
+        {
+          "key": "清潔",
+          "value": "進行中",
+          "tone": "alert"
+        }
+      ],
+      "api": {
+        "endpoint": "/api/racks/R01/slots/R01-006",
+        "queryMethod": "GET",
+        "saveMethod": "PATCH"
+      }
+    },
+    {
+      "slotNumber": 10,
+      "animal": {
+        "species": "犬",
+        "name": "尚未指派",
+        "gender": "母",
+        "size": "大型"
+      },
+      "reservation": {
+        "isReserved": false,
+        "status": "未預約",
+        "checkInDate": null
+      },
+      "care": {
+        "occupancyStatus": "隔離觀察",
+        "caretaker": "醫護組",
+        "lastUpdated": "2026-04-25 08:30",
+        "note": "保留作為隔離區使用，僅限醫護人員安排。"
+      },
+      "tags": [
+        {
+          "key": "區域",
+          "value": "隔離區",
+          "tone": "alert"
+        },
+        {
+          "key": "權限",
+          "value": "醫護限定",
+          "tone": "neutral"
+        }
+      ],
+      "api": {
+        "endpoint": "/api/racks/R01/slots/R01-010",
+        "queryMethod": "GET",
+        "saveMethod": "PUT"
+      }
+    },
+    {
+      "slotNumber": 18,
+      "animal": {
+        "species": "貓",
+        "name": "Yuki",
+        "gender": "公",
+        "size": "中型"
+      },
+      "reservation": {
+        "isReserved": true,
+        "status": "已預約",
+        "checkInDate": "2026-04-28"
+      },
+      "care": {
+        "occupancyStatus": "待入住",
+        "caretaker": "夜班櫃台",
+        "lastUpdated": "2026-04-25 11:40",
+        "note": "需先準備貓砂盆與抗敏飼料。"
+      },
+      "tags": [
+        {
+          "key": "區域",
+          "value": "貓房",
+          "tone": "cat"
+        },
+        {
+          "key": "飲食",
+          "value": "抗敏配方",
+          "tone": "info"
+        }
+      ],
+      "api": {
+        "endpoint": "/api/racks/R01/slots/R01-018",
+        "queryMethod": "GET",
+        "saveMethod": "PUT"
+      }
+    },
+    {
+      "slotNumber": 24,
+      "animal": {
+        "species": "貓",
+        "name": "尚未指派",
+        "gender": "母",
+        "size": "中型"
+      },
+      "reservation": {
+        "isReserved": false,
+        "status": "未預約",
+        "checkInDate": null
+      },
+      "care": {
+        "occupancyStatus": "保留",
+        "caretaker": "前台主管",
+        "lastUpdated": "2026-04-25 12:10",
+        "note": "預留給合作中途使用，暫不開放一般排房。"
+      },
+      "tags": [
+        {
+          "key": "區域",
+          "value": "貓房",
+          "tone": "cat"
+        },
+        {
+          "key": "用途",
+          "value": "合作保留",
+          "tone": "info"
+        }
+      ],
+      "api": {
+        "endpoint": "/api/racks/R01/slots/R01-024",
+        "queryMethod": "GET",
+        "saveMethod": "PATCH"
+      }
+    },
+    {
+      "slotNumber": 30,
+      "animal": {
+        "species": "貓",
+        "name": "尚未指派",
+        "gender": "母",
+        "size": "大型"
+      },
+      "reservation": {
+        "isReserved": false,
+        "status": "未預約",
+        "checkInDate": null
+      },
+      "care": {
+        "occupancyStatus": "隔離觀察",
+        "caretaker": "醫護組",
+        "lastUpdated": "2026-04-25 08:50",
+        "note": "隔離區籠位，使用前需完成完整清消。"
+      },
+      "tags": [
+        {
+          "key": "區域",
+          "value": "隔離區",
+          "tone": "alert"
+        }
+      ],
+      "api": {
+        "endpoint": "/api/racks/R01/slots/R01-030",
+        "queryMethod": "GET",
+        "saveMethod": "PUT"
+      }
+    },
+    {
+      "slotNumber": 73,
+      "animal": {
+        "species": "犬",
+        "name": "Coco",
+        "gender": "母",
+        "size": "小型"
+      },
+      "reservation": {
+        "isReserved": true,
+        "status": "已預約",
+        "checkInDate": "2026-04-27"
+      },
+      "care": {
+        "occupancyStatus": "待入住",
+        "caretaker": "高位區專責",
+        "lastUpdated": "2026-04-25 13:05",
+        "note": "高位區籠位，需確認上下籠動線。"
+      },
+      "tags": [
+        {
+          "key": "區域",
+          "value": "高位區",
+          "tone": "info"
+        },
+        {
+          "key": "動線",
+          "value": "需兩人作業",
+          "tone": "neutral"
+        }
+      ],
+      "api": {
+        "endpoint": "/api/racks/R01/slots/R01-073",
+        "queryMethod": "GET",
+        "saveMethod": "PUT"
+      }
+    },
+    {
+      "slotNumber": 80,
+      "animal": {
+        "species": "犬",
+        "name": "尚未指派",
+        "gender": "母",
+        "size": "大型"
+      },
+      "reservation": {
+        "isReserved": false,
+        "status": "未預約",
+        "checkInDate": null
+      },
+      "care": {
+        "occupancyStatus": "空籠位",
+        "caretaker": "高位區專責",
+        "lastUpdated": "2026-04-25 13:20",
+        "note": "高位區尾端籠位，安排入住前需先確認防滑墊。"
+      },
+      "tags": [
+        {
+          "key": "區域",
+          "value": "高位區",
+          "tone": "info"
+        },
+        {
+          "key": "設備",
+          "value": "防滑墊檢查",
+          "tone": "neutral"
+        }
+      ],
+      "api": {
+        "endpoint": "/api/racks/R01/slots/R01-080",
+        "queryMethod": "GET",
+        "saveMethod": "PATCH"
+      }
+    }
+  ]
+}
