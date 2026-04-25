@@ -1,0 +1,55 @@
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animal Rack</title>
+<style>
+.rack {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 8px;
+padding: 16px; 
+background: #8fb3bd;
+border: 4px solid #333;
+background-image:
+linear-gradient(#6d8f98 2px, transparent 2px),
+linear-gradient(90deg, #6d8f98 2px, transparent 2px);
+background-size: calc(100% / 3) calc(100% / 1);
+}
+/* 共用樣式 */
+.icon {
+  display: inline-block;
+  width: 128px;               /* 根據圖案單元大小調整 */
+  height: 128px;              /* 根據圖案單元大小調整 */
+  background-image: url('rack_animals.png'); 
+  background-repeat: no-repeat;
+  background-size: 512px auto; /* 關鍵：設定總寬度為 4 個圖示寬 (128*4) */
+}
+
+/* 第一排座標 (Y軸為 0) */
+.icon-rat     { background-position: 0 0; }
+.icon-rabbit  { background-position: -128px 0; }
+.icon-sheep   { background-position: -256px 0; }
+.icon-pig     { background-position: -384px 0; }
+
+/* 第二排座標 (Y軸往下移 128px) */
+.icon-dog     { background-position: 0 -128px; }
+.icon-rooster { background-position: -128px -128px; }
+.icon-bird    { background-position: -256px -128px; }
+
+</style>
+</head>
+
+<body>  
+<div class="rack">
+<div class="cell"><i class="icon icon-rat"></i></div>
+<div class="cell"><i class="icon icon-rabbit"></i></div>
+<div class="cell"><i class="icon icon-sheep"></i></div>
+<div class="cell"><i class="icon icon-pig"></i></div>
+<div class="cell"><i class="icon icon-dog"></i></div>
+<div class="cell"><i class="icon icon-rooster"></i></div>
+<div class="cell"><i class="icon icon-bird"></i></div>
+</div>
+<img src="rack_animals.png" alt="Animal Icons" style="display:inline;"> <!-- 隱藏圖片，確保載入 -->
+</body>
+</html>
